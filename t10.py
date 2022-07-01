@@ -171,3 +171,22 @@ if __name__ == '__main__':
     done_task_count = sum(t.is_done() for t in tasks)
     assert task_count == done_task_count, f'任务总数 {task_count} 结束任务 {done_task_count}'
     print(total_block_time, time.time() - start_time)
+
+# 总结
+"""
+yield 是主动协程，最先出栈
+yield from 是跟随 yield 的被动协程，紧跟着 yield 出栈
+yield from 简化了被动协程的代码，不用写大量的 while
+
+yield from 作用仅仅是作为管道，连接了调用方(send) 与最底层的协程函数(yield)
+
+调用 send，激活协程, 主动入栈
+yield from 仅仅作为管道依次传递中间的被动协程，直到遇到 yield, 子协程主动出栈，yield from 也跟着出栈，yield的值传递给send表达式，
+等到再次send激活协程后，主动协程代码从yield处继续运行，被动协程从yield from处继续运行，循环往复，直到遇到return(StopIteration), 
+会把return的value传给yield from表达式
+
+
+asycio 新语法
+await = yield from
+__await__ = __iter__
+"""

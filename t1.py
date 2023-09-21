@@ -41,9 +41,4 @@ def small_step():
 
 
 # 执行任务
-# one_task()  # small_step 直接 sleep 2秒
-
-
-from random import Random
-
-random.random
+one_task()  # small_step 直接 sleep 2秒

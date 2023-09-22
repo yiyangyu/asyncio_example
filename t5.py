@@ -32,7 +32,8 @@ def small_step():
     print('   休息一下，马上回来')
     t1 = time.time()
     # yield sleep, 2
-    yield from YieldFromAble((sleep, 2))  # 引入一个 子协程YieldFromAble
+    result = yield from YieldFromAble((sleep, 2))  # 引入一个 子协程YieldFromAble
+    # print(f'yield result {result}')
     assert time.time() - t1 > 2, '睡眠时间不足2秒'
     print('   努力工作中。。。')
     return 123  # 完成了
@@ -44,6 +45,7 @@ class YieldFromAble:
 
     def __iter__(self):
         yield self
+        return 'self'
 
 
 class Task:

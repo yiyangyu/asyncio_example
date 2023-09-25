@@ -161,13 +161,13 @@ def util_all_done(_tasks):
 if __name__ == '__main__':
     loop = EventLoop()
     total_block_time = 0
-    task_count = 10000
+    task_count = 5000
     start_time = time.time()
     tasks = [Task(one_task()) for i in range(task_count)]
     loop.call_soon(util_all_done, tasks)  # 代替手动执行loop.stop，检测tasks全部结束后自动stop
     # loop.call_later(0.1, util_all_done, tasks)  # 代替手动执行loop.stop，检测tasks全部结束后自动stop
     # loop.call_later(1, loop.stop)
-    loop.run_forever()
+    loop.run_forever()  # 设置了所有的立刻执行任务and定时任务之后再执行run_forever
     done_task_count = sum(t.is_done() for t in tasks)
     assert task_count == done_task_count, f'任务总数 {task_count} 结束任务 {done_task_count}'
     print(total_block_time, time.time() - start_time)
@@ -178,12 +178,12 @@ yield 是主动协程，最先出栈
 yield from 是跟随 yield 的被动协程，紧跟着 yield 出栈
 yield from 简化了被动协程的代码，不用写大量的 while
 
-yield from 作用仅仅是作为管道，连接了调用方(send) 与最底层的协程函数(yield)
+yield from 作用仅仅是作为管道（透传），连接了调用方(send) 与最底层的协程函数(yield)
 
 调用 send，激活协程, 主动入栈
-yield from 仅仅作为管道依次传递中间的被动协程，直到遇到 yield, 子协程主动出栈，yield from 也跟着出栈，yield的值传递给send表达式，
+yield from 仅仅作为管道依次传递中间的被动协程，直到遇到 yield, 子协程主动出栈，yield from 也跟着出栈，最底层yield的值传递给最上层send表达式，
 等到再次send激活协程后，主动协程代码从yield处继续运行，被动协程从yield from处继续运行，循环往复，直到遇到return(StopIteration), 
-会把return的value传给yield from表达式
+协程函数(不管是主动的yield还是被动的yield from)的return值会传给yield from（或者说 await）
 
 
 asycio 新语法

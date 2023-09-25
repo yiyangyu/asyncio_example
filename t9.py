@@ -90,7 +90,7 @@ class Task:
             else:
                 assert isinstance(x, Future)  # yield 的是一个 Future对象
                 # 我什么时候能恢复执行?
-                x.add_done_callback(self.run)  # 回调函数列表中添加了这个task的run函数，用于激活协程
+                x.add_done_callback(self.run)  # future对象增加被set_result的时候会再次激活调用task.run函数，激活协程
         else:
             print(f'task is done')
         print('----------')
